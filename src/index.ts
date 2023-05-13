@@ -16,7 +16,7 @@ const main = async () => {
     accessToken,
 
     // TODO : get this value from cli args
-    url: "https://open.spotify.com/album/6fx2qQE4ZEa4s15ZZr4jDT",
+    url: "https://open.spotify.com/album/7CoOasjuqwN64Ew8ocM06K",
   });
 
   await extractor.extract();

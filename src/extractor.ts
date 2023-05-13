@@ -86,8 +86,6 @@ class Extractor {
         .toLowerCase(),
     );
 
-    console.log(searchresults);
-
     if (searchresults.videos.length === 0) {
       return null;
     }
