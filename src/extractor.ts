@@ -81,9 +81,7 @@ class Extractor {
 
   async searchYoutube({ title, artist, albumName }: SeachParams) {
     const searchresults = await yts.search(
-      `${albumName} ${title} ${artist} ${albumName && "Album"}`
-        .trim()
-        .toLowerCase(),
+      `${albumName} ${title} by ${artist} ${albumName && "Topic"}`.trim(),
     );
 
     if (searchresults.videos.length === 0) {
@@ -95,7 +93,7 @@ class Extractor {
 
   getArtistNames(artists: { name: string }[]) {
     return artists.reduce((acc, curr) => {
-      return acc + curr.name + ", ";
+      return acc + curr.name + " ";
     }, "");
   }
 
