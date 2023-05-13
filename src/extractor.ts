@@ -54,11 +54,11 @@ class Extractor {
 
   async extract() {
     // TODO : extract options from cli arguments
-    const tracks = await this.getTracks("37i9dQZF1EIUQyRBujw1me");
+    const tracks = await this.getTracks("6mQbPcIlRQLTEV7JFT3ylj");
 
     const urls: (string | null)[] = [];
 
-    for (const track of tracks.items) {
+    for (const [index, track] of tracks.items.entries()) {
       const title = track.track.name;
       const artist = this.getArtistNames(track.track.artists);
       const searchParams = {
@@ -69,7 +69,9 @@ class Extractor {
       // Delay before making the request
       await delay(200 + Math.random() * 800);
       const spinner = createSpinner(
-        `Searching for : ${title} by ${artist}`,
+        `${index + 1}/${
+          tracks.items.length
+        } Searching for: ${title} by ${artist}`,
       ).start();
 
       const url = await this.searchYoutube(searchParams);
