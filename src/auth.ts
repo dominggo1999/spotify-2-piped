@@ -9,7 +9,7 @@ class SpotifyAuth {
     this.clientSecret = clientSecret;
   }
 
-  async requestAccessToken() {
+  async requestAccessToken(): Promise<null | string> {
     const headers = {
       headers: {
         Accept: "application/json",
@@ -33,6 +33,7 @@ class SpotifyAuth {
       return response.data.access_token;
     } catch (error) {
       console.error(error);
+      return null;
     }
   }
 }

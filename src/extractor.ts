@@ -2,6 +2,20 @@ import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
 import fs from "fs";
 import yts from "yt-search";
 import { createSpinner } from "nanospinner";
+import { Album, AlbumItem, Playlist, PlaylistItem } from "./types";
+
+interface ExtractOptions {
+  url: string;
+  accessToken: string;
+}
+
+type UrlType = "playlist" | "album";
+
+type SeachParams = {
+  title: string;
+  artist: string;
+  albumName: string;
+};
 
 const delay = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -20,21 +34,59 @@ export const createSpotifyApi = (accessToken: string) => {
 class Extractor {
   private spotifyApi: AxiosInstance;
 
-  constructor(accessToken: string) {
-    this.spotifyApi = createSpotifyApi(accessToken);
+  constructor(public options: ExtractOptions) {
+    this.spotifyApi = createSpotifyApi(options.accessToken);
+    this.options = options;
   }
 
-  async getTracks(playlistId: string) {
-    // Get playlist
-    const { data: tracks } = await this.spotifyApi.get(
-      "/playlists/" + playlistId + "/tracks",
+  getUrlType(): { type: UrlType; id: string } | null {
+    const url = this.options.url;
+    const idRegex = /\/(album|playlist)\/([\w\d]+)/;
+    const match = url.match(idRegex);
+
+    const [, urlType, id] = match as [string, UrlType, string];
+
+    switch (urlType) {
+      case "playlist":
+        return { type: "playlist", id };
+      case "album":
+        return { type: "album", id };
+      default:
+        return null;
+    }
+  }
+
+  async getTracks() {
+    const { type, id } = this.getUrlType();
+
+    let tracksEndpoint = "";
+
+    if (type === "playlist") {
+      tracksEndpoint = `/playlists/${id}`;
+
+      const results = await this.spotifyApi.get<Playlist>(tracksEndpoint);
+
+      return results.data;
+    } else if (type === "album") {
+      tracksEndpoint = `/albums/${id}`;
+
+      const results = await this.spotifyApi.get<Album>(tracksEndpoint);
+      return results.data;
+    } else {
+      throw new Error(
+        "Unsupported URL. Only playlist and album URLs are supported.",
+      );
+    }
+  }
+
+  async searchYoutube({ title, artist, albumName }: SeachParams) {
+    const searchresults = await yts.search(
+      `${albumName} ${title} ${artist} ${albumName && "Album"}`
+        .trim()
+        .toLowerCase(),
     );
 
-    return tracks;
-  }
-
-  async searchYoutube({ title, artist }: { title: string; artist: string }) {
-    const searchresults = await yts.search(`${title} ${artist}`);
+    console.log(searchresults);
 
     if (searchresults.videos.length === 0) {
       return null;
@@ -51,27 +103,39 @@ class Extractor {
 
   async extract() {
     // TODO : extract options from cli arguments
-    const tracks = await this.getTracks("6mQbPcIlRQLTEV7JFT3ylj");
+    const { name, tracks } = await this.getTracks();
 
     const urls: (string | null)[] = [];
 
-    for (const [index, track] of tracks.items.entries()) {
-      const title = track.track.name;
-      const artist = this.getArtistNames(track.track.artists);
-      const searchParams = {
-        title,
-        artist,
-      };
+    for (const [index, item] of tracks.items.entries()) {
+      const { type } = this.getUrlType();
+
+      let title = "";
+      let artist = "";
+      let albumName = "";
+
+      if (type === "playlist") {
+        const playlistItem = item as PlaylistItem;
+        title = playlistItem.track.name;
+        artist = this.getArtistNames(playlistItem.track.artists);
+      } else if (type === "album") {
+        const albumItem = item as AlbumItem;
+        title = albumItem.name;
+        artist = this.getArtistNames(albumItem.artists);
+        albumName = name;
+      }
 
       // Delay before making the request
       await delay(200 + Math.random() * 800);
       const spinner = createSpinner(
-        `${index + 1}/${
-          tracks.items.length
-        } Searching for: ${title} by ${artist}`,
+        `${index + 1}/${tracks.items.length} ${title} by ${artist}`,
       ).start();
 
-      const url = await this.searchYoutube(searchParams);
+      const url = await this.searchYoutube({
+        title,
+        artist,
+        albumName,
+      });
 
       if (url) {
         spinner.success();
