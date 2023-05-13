@@ -20,9 +20,6 @@ export const createSpotifyApi = (accessToken: string) => {
 class Extractor {
   private spotifyApi: AxiosInstance;
 
-  // TODO : extract options from cli arguments
-  public userId: string = process.env.SPOTIFY_USER_ID as string;
-
   constructor(accessToken: string) {
     this.spotifyApi = createSpotifyApi(accessToken);
   }
