@@ -75,9 +75,15 @@ class Extractor {
       ).start();
 
       const url = await this.searchYoutube(searchParams);
-      spinner.success();
 
-      urls.push(url);
+      if (url) {
+        spinner.success();
+        urls.push(url);
+      } else {
+        spinner.error({
+          text: `${title} by ${artist} not found`,
+        });
+      }
     }
 
     // TODO : get the name from cli args
@@ -90,7 +96,7 @@ class Extractor {
           name: "first-try",
           type: "playlist",
           visibility: "private",
-          videos: urls.filter((i) => i),
+          videos: urls,
         },
       ],
     };
