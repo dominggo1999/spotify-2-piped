@@ -2,12 +2,15 @@ import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
 import fs from "fs";
 import yts from "yt-search";
 import { createSpinner } from "nanospinner";
-import { Album, AlbumItem, Playlist, PlaylistItem } from "./types";
-
-interface ExtractOptions {
-  url: string;
-  accessToken: string;
-}
+import {
+  Album,
+  AlbumItem,
+  ExtractOptions,
+  Playlist,
+  PlaylistItem,
+} from "./types";
+import path from "path";
+import shortUUID from "short-uuid";
 
 type UrlType = "playlist" | "album";
 
@@ -15,6 +18,17 @@ type SeachParams = {
   title: string;
   artist: string;
   albumName: string;
+};
+
+type PipedBookmarks = {
+  format: "Piped";
+  version: 1;
+  playlists: {
+    name: string;
+    type: "playlist";
+    visibility: "private";
+    videos: string[];
+  }[];
 };
 
 const delay = (ms: number) => {
@@ -40,7 +54,7 @@ class Extractor {
   }
 
   getUrlType(): { type: UrlType; id: string } | null {
-    const url = this.options.url;
+    const url = this.options.playlistUrl;
     const idRegex = /\/(album|playlist)\/([\w\d]+)/;
     const match = url.match(idRegex);
 
@@ -143,14 +157,15 @@ class Extractor {
       }
     }
 
-    // TODO : get the name from cli args
+    const playlistName = this.options.playlistName || name;
+
     // Template
-    const pipedBookmarks = {
+    const pipedBookmarks: PipedBookmarks = {
       format: "Piped",
       version: 1,
       playlists: [
         {
-          name: "first-try",
+          name: playlistName,
           type: "playlist",
           visibility: "private",
           videos: urls,
@@ -158,13 +173,38 @@ class Extractor {
       ],
     };
 
-    // Save pipedBookmarks to file
-    fs.writeFileSync(
-      "./results/pipedBookmarks.json",
-      JSON.stringify(pipedBookmarks),
+    this.saveFile(pipedBookmarks);
+  }
+
+  async saveFile(bookmarks: PipedBookmarks) {
+    const fileName = this.options.fileName;
+    const destinationPath = this.options.destinationPath;
+    const filePath = path.resolve(
+      process.cwd(),
+      destinationPath,
+      `${this.options.fileName}.json`,
     );
 
-    console.log("Piped bookmarks successfully created");
+    // Check if the file already exists
+    const fileExists = fs.existsSync(filePath);
+
+    // Append the timestamp to the filename if the file already exists
+    const newFileName =
+      (fileExists ? `${fileName}-${shortUUID.generate()}` : fileName) + ".json";
+    const newFilePath = path.resolve(
+      process.cwd(),
+      destinationPath,
+      newFileName,
+    );
+
+    // Save pipedBookmarks to file
+    fs.writeFileSync(newFilePath, JSON.stringify(bookmarks), {
+      // create the file if it doesn't exist, or overwrite the file if it already exists.
+      flag: fs.existsSync(filePath) ? "w" : "wx",
+    });
+
+    createSpinner("Piped bookmarks successfully created").success();
+    createSpinner(newFileName).success();
   }
 }
 

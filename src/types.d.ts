@@ -130,3 +130,11 @@ export type PlaylistItem = {
   is_local: boolean;
   track: Track;
 };
+
+export interface ExtractOptions {
+  playlistUrl: string;
+  accessToken: string;
+  destinationPath: string;
+  fileName: string;
+  playlistName?: string;
+}

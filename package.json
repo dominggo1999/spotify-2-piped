@@ -18,7 +18,8 @@
     "dist"
   ],
   "scripts": {
-    "dev": "vite-node --watch src/index.ts",
+    "dev": "vite-node src/index.ts",
+    "dev:watch": "vite-node --watch src/index.ts",
     "start": "node dist/index.js",
     "clean": "rimraf coverage build tmp",
     "prebuild": "npm run lint",
@@ -35,6 +36,7 @@
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^15.0.2",
+    "@types/inquirer": "^9.0.3",
     "@types/node": "~18.16.5",
     "@types/qs": "^6.9.7",
     "@types/yt-search": "^2.3.2",
@@ -58,8 +60,10 @@
   "dependencies": {
     "axios": "^1.4.0",
     "dotenv": "^16.0.3",
+    "inquirer": "^9.2.3",
     "nanospinner": "^1.1.0",
     "qs": "^6.11.1",
+    "short-uuid": "^4.2.2",
     "tslib": "~2.5",
     "yt-search": "^2.10.4"
   },

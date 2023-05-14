@@ -1,6 +1,8 @@
 import { config } from "dotenv";
 import SpotifyAuth from "./auth";
 import Extractor from "./extractor";
+import { createPrompts } from "./prompts";
+import inquirer from "inquirer";
 
 // Make .env accessbile
 config();
@@ -11,12 +13,16 @@ const auth = new SpotifyAuth(
 );
 
 const main = async () => {
+  // Ask user for the options
+  const options = await inquirer.prompt(createPrompts());
+
+  // Authenticate
   const accessToken = await auth.requestAccessToken();
+
+  // Extract information
   const extractor = new Extractor({
     accessToken,
-
-    // TODO : get this value from cli args
-    url: "https://open.spotify.com/album/7CoOasjuqwN64Ew8ocM06K",
+    ...options,
   });
 
   await extractor.extract();
