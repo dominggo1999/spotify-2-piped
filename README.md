@@ -5,3 +5,4 @@
 - [ ] Handle request errors
 - [x] Custom target file path
 - [ ] Multiple playlists conversion
+- [ ] Autogenerate filename based on the playlist name and artists
