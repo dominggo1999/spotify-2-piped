@@ -31,6 +31,7 @@ export default defineConfig({
         "short-uuid",
         "tslib",
         "yt-search",
+        "chalk",
       ],
     },
   },
