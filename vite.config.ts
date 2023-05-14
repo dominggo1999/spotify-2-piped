@@ -20,7 +20,17 @@ export default defineConfig({
     },
     rollupOptions: {
       // If you are building a library, make sure to externalize deps, since we don't want to bundle them
-      external: [...builtinModules],
+      external: [
+        ...builtinModules,
+        "axios",
+        "dotenv",
+        "inquirer",
+        "nanospinner",
+        "qs",
+        "short-uuid",
+        "tslib",
+        "yt-search",
+      ],
     },
   },
   plugins: [tsconfigPaths(), dts(), nodeResolve()],
