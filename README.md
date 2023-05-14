@@ -1,4 +1,4 @@
-# spotify-piped-playlist
+# spotify-2-piped
 
 - [x] Convert a spotify playlist into a [Piped](https://github.com/TeamPiped/Piped) playlist
 - [x] Create interactive cli using https://www.npmjs.com/package/inquirer
