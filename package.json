@@ -35,7 +35,8 @@
     "test:ui": "vitest --ui",
     "coverage": "vitest run --coverage",
     "preview-coverage": "vite preview --outDir coverage",
-    "type-check": "tsc -p tsconfig.release.json"
+    "type-check": "tsc -p tsconfig.release.json",
+    "postinstall": "node scripts/postinstall.js"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^15.0.2",
