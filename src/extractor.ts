@@ -11,6 +11,7 @@ import {
 } from "./types";
 import path from "path";
 import shortUUID from "short-uuid";
+import { removeDuplicates } from "./utils";
 
 type UrlType = "playlist" | "album";
 
@@ -168,7 +169,7 @@ class Extractor {
           name: playlistName,
           type: "playlist",
           visibility: "private",
-          videos: urls,
+          videos: removeDuplicates(urls),
         },
       ],
     };
