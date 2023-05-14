@@ -3,6 +3,7 @@ import qs from "qs";
 import fs from "fs";
 import path from "path";
 import os from "os";
+import chalk from "chalk";
 
 class SpotifyAuth {
   OAUTH_TOKEN_URL = "https://accounts.spotify.com/api/token";
@@ -71,8 +72,14 @@ export const getCredentials = (): {
         };
       }
     }
-    throw new Error(
-      "Unable to find SPOTIFY_CLIENT_ID and SPOTIFY_CLIENT_SECRET. Please provide them either in .env file or in .spotify-2-piped/spotify-auth.json file.",
-    );
+    const errorMessage =
+      chalk.red(
+        "Unable to find SPOTIFY_CLIENT_ID and SPOTIFY_CLIENT_SECRET.\n",
+      ) +
+      chalk.yellow(
+        "Please provide them either in .env file or in .spotify-2-piped/spotify-auth.json file.",
+      );
+
+    throw new Error(errorMessage);
   }
 };
