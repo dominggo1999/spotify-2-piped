@@ -4,6 +4,7 @@ import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
+import shebang from "rollup-plugin-preserve-shebang";
 
 import { builtinModules } from "module";
 
@@ -33,7 +34,14 @@ export default defineConfig({
       ],
     },
   },
-  plugins: [tsconfigPaths(), dts(), nodeResolve()],
+  plugins: [
+    tsconfigPaths(),
+    dts(),
+    nodeResolve(),
+    shebang({
+      shebang: "#!/usr/bin/env node",
+    }),
+  ],
   test: {
     globals: true,
   },

@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { config } from "dotenv";
 import SpotifyAuth from "./auth";
 import Extractor from "./extractor";
