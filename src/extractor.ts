@@ -108,7 +108,7 @@ class Extractor {
 
   getArtistNames(artists: { name: string }[]) {
     return artists.reduce((acc, curr) => {
-      return acc + curr.name + " ";
+      return `${acc}${curr.name} `;
     }, "");
   }
 
@@ -190,8 +190,9 @@ class Extractor {
     const fileExists = fs.existsSync(filePath);
 
     // Append the timestamp to the filename if the file already exists
-    const newFileName =
-      (fileExists ? `${fileName}-${shortUUID.generate()}` : fileName) + ".json";
+    const newFileName = `${
+      fileExists ? `${fileName}-${shortUUID.generate()}` : fileName
+    }.json`;
     const newFilePath = path.resolve(
       process.cwd(),
       destinationPath,

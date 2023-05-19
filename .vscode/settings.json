@@ -6,23 +6,34 @@
     "**/CVS": true,
     "**/.DS_Store": true,
     "**/Thumbs.db": true,
+    "**/.next": true,
     "**/build": true,
-    "**/coverage": true
+    "**/dist": true,
+    "**/.turbo": true,
+    "**/tsconfig.tsbuildinfo": true
   },
+  "editor.defaultFormatter": "rome.rome",
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "quickfix.rome": true
   },
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnSave": true,
-  "eslint.rules.customizations": [
-    {
-      "rule": "*",
-      "severity": "warn"
-    }
-  ],
   "typescript.tsdk": "node_modules/typescript/lib",
-  "[python]": {
-    "editor.defaultFormatter": "ms-python.black-formatter"
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
   },
-  "python.formatting.provider": "none"
+  "[javascript]": {
+    "editor.maxTokenizationLineLength": 2500,
+    "editor.defaultFormatter": "rome.rome"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "rome.rome"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "rome.rome"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "rome.rome"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }
