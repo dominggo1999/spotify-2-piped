@@ -14,7 +14,9 @@
       "require": "./dist/index.umd.cjs"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "bin": {
     "spotify-2-piped": "./dist/index.js"
   },
@@ -64,6 +66,7 @@
     "axios": "^1.4.0",
     "chalk": "^5.2.0",
     "dotenv": "^16.0.3",
+    "fastest-levenshtein": "^1.0.16",
     "inquirer": "^9.2.3",
     "nanospinner": "^1.1.0",
     "qs": "^6.11.1",
@@ -75,6 +78,9 @@
     "node": "18.16.0"
   },
   "lint-staged": {
-    "**/*.{js,ts,jsx,tsx}": ["rome check --apply .", "rome format --write ."]
+    "**/*.{js,ts,jsx,tsx}": [
+      "rome check --apply .",
+      "rome format --write ."
+    ]
   }
 }

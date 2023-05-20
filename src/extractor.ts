@@ -12,6 +12,7 @@ import {
 import path from "path";
 import shortUUID from "short-uuid";
 import { removeDuplicates } from "./utils";
+import { closest } from "fastest-levenshtein";
 
 type UrlType = "playlist" | "album";
 
@@ -95,15 +96,37 @@ class Extractor {
   }
 
   async searchYoutube({ title, artist, albumName }: SeachParams) {
-    const searchresults = await yts.search(
-      `${albumName} ${title} by ${artist} ${albumName && "Topic"}`.trim(),
-    );
+    const query = `${albumName} ${title} by ${artist} ${
+      albumName && "Topic"
+    }`.trim();
+
+    const searchresults = await yts.search(query);
 
     if (searchresults.videos.length === 0) {
       return null;
     }
 
-    return searchresults.videos[0].url;
+    // Find the closest youtube result to the spotify info
+    // TODO :  also use duration to determine the result
+    const topThreeResults = searchresults.videos.slice(0, 4);
+    const topThreeQueries = topThreeResults.map((i) => {
+      const ytTitle = i.title;
+      const ytArtist = i.author.name;
+
+      // Check if the title contains the artist
+      if (title.includes(ytArtist)) {
+        return ytTitle;
+      }
+
+      return `${ytTitle} by ${ytArtist}`;
+    });
+
+    const closestQuery = closest(`${title} ${artist}`, topThreeQueries);
+
+    const closestResult =
+      topThreeResults[topThreeQueries.indexOf(closestQuery)];
+
+    return closestResult.url;
   }
 
   getArtistNames(artists: { name: string }[]) {
