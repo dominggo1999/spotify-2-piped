@@ -111,14 +111,14 @@ class Extractor {
     const topThreeResults = searchresults.videos.slice(0, 4);
     const topThreeQueries = topThreeResults.map((i) => {
       const ytTitle = i.title;
-      const ytArtist = i.author.name;
+      const ytArtist = i.author.name.replace(" - Topic", "");
 
       // Check if the title contains the artist
       if (title.includes(ytArtist)) {
         return ytTitle;
       }
 
-      return `${ytTitle} by ${ytArtist}`;
+      return `${ytTitle} ${ytArtist}`;
     });
 
     const closestQuery = closest(`${title} ${artist}`, topThreeQueries);
